@@ -1,0 +1,69 @@
+#include templates and components
+include:
+- template: Security/SAST.gitlab-ci.yml
+
+# Définition des variables
+variables:
+  PRE_COMMIT_CI_FILE: ".pre-commit-ci.yaml"
+  UNIT_TEST_DIR: "src/function/tests"
+
+#stages
+stages:
+- build
+- test
+
+# Définition des ancres
+.python_setup: &python_setup
+  image: python:3.11.10
+  before_script:
+    - echo "Installing pipx .."
+    - python3 -m pip install --user pipx
+    - python3 -m pipx ensurepath
+    - source ~/.bashrc
+    - echo "Installing poetry .."
+    - pipx install poetry
+    - echo "Installing project dependencies .."
+    - poetry install --no-interaction --no-root
+
+# Job template
+.base_job: &base_job
+  <<: *python_setup
+
+# Jobs spécifiques
+pre-commit:
+  <<: *base_job
+  stage: build
+  script:
+    - poetry run pre-commit autoupdate
+    - poetry run pre-commit run -c $PRE_COMMIT_CI_FILE -a
+
+unit_tests:
+  <<: *base_job
+  stage: test
+  script:
+    - cd $UNIT_TEST_DIR
+    - poetry run pytest
+
+#deploy_prod:
+#  stage: deploy
+#  script:
+#    - echo "Deploying infrastructure with Terraform .."
+#    - terraform init
+#    - terraform apply -auto-approve
+#  only:
+#    - master
+#  rules:
+#    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+#      when: manual
+
+
+#destroy_prod:
+#  stage: destroy
+#  script:
+#    - echo "Destroying infrastructure with Terraform .."
+#    - terraform destroy -auto-approve
+#  only:
+#    - master
+#  rules:
+#    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+#      when: manual
