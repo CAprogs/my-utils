@@ -1,0 +1,110 @@
+[project]
+name = "example-project"
+version = "0.1.0"
+description = "Example description of a project using dbt and elementary-data"
+authors = [
+    {name = "Charles K.",email = "cakotto@ippon.fr"}
+]
+license = {text = "GNU"}
+readme = "README.md"
+requires-python = ">=3.11,<4"
+dependencies = [
+    "dbt-snowflake (>=1.9.1,<2.0.0)",
+    "dbt-core (>=1.9.2,<2.0.0)",
+    "elementary-data (>=0.16.1,<0.17.0)",
+    "setuptools (>=75.8.0,<76.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.1.0"
+sqlfluff = "^3.3.1"
+sqlfluff-templater-dbt = "^3.3.1"
+
+[tool.ruff]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+    ".pytest_cache",
+    "__pycache__",
+]
+fix = false
+required-version = ">=0.6.8"
+line-length = 100
+indent-width = 4
+output-format = "concise"
+
+[tool.ruff.lint]
+select = [
+        "E4",
+        "E5",
+        "E7",
+        "F",
+        "UP",
+        "D",
+        "N",
+        "S",
+        "B",
+        "PT",
+        "RUF005",
+        "RUF019",
+        "PLR1711",
+        "PLR1722",
+        "PLR1730",
+        "PLR2044",
+        "PLR5501",
+        "ARG"
+        ]
+ignore = ["S101", "D300", "D206"]
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402", "D104"]
+"test_dependencies.py" = ["D103", "D100"]
+"dependencies.py" = ["D100"]
+"function_app.py" = ["N803"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+length-sort-straight = true
+length-sort = true
+no-sections = true
+
+[tool.ruff.format]
+exclude = ["__init__.py"]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = true
+line-ending = "auto"
