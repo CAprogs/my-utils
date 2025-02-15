@@ -1,6 +1,6 @@
 [project]
-name = "example-project"
-version = "0.1.0"
+name = "my-utils"
+version = "0.0.1"
 description = "Example description of a project using dbt and elementary-data"
 authors = [
     {name = "Charles K.",email = "cakotto@ippon.fr"}
@@ -24,6 +24,7 @@ build-backend = "poetry.core.masonry.api"
 pre-commit = "^4.1.0"
 sqlfluff = "^3.3.1"
 sqlfluff-templater-dbt = "^3.3.1"
+commitizen = "^4.2.1"
 
 [tool.ruff]
 exclude = [
@@ -108,3 +109,11 @@ quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = true
 line-ending = "auto"
+
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "$version"
+version_scheme = "semver2"
+version = "0.0.1"
+update_changelog_on_bump = true

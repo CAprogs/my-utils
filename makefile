@@ -23,9 +23,7 @@ install:
 	@poetry check --lock
 	@echo "\nInstalling pre-commit hooks.."
 	@poetry run pre-commit install --install-hooks
-	@echo "\nInstalling dbt packages .."
-	@poetry run dbt deps
-	@echo "AIRFLOW_UID=5000" > .env
+
 
 
 requirements:
