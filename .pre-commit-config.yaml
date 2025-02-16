@@ -3,6 +3,7 @@
 
 exclude: '^<dbt_prj_name>/seeds/'
 default_install_hook_types: [pre-commit, pre-push, commit-msg]
+default_stages: [pre-commit]
 
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
