@@ -28,7 +28,7 @@ tag:
 	@echo "\nChecking commits .."
 	@uv run cz bump
 	@echo "\nGenerating changelog .."
-	@uz bump -ch
+	@uv bump -ch
 
 requirements:
 	@echo "\nGenerating Python requirements .."
