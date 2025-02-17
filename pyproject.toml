@@ -1,30 +1,26 @@
 [project]
 name = "my-utils"
-version = "0.0.1"
+version = "0.1.0"
 description = "Example description of a project using dbt and elementary-data"
 authors = [
     {name = "Charles K.",email = "cakotto@ippon.fr"}
 ]
 license = {text = "GNU"}
-readme = "README.md"
-requires-python = ">=3.11,<4"
+requires-python = "==3.11.11"
 dependencies = [
-    "dbt-snowflake (>=1.9.1,<2.0.0)",
-    "dbt-core (>=1.9.2,<2.0.0)",
-    "elementary-data (>=0.16.1,<0.17.0)",
-    "setuptools (>=75.8.0,<76.0.0)"
+    "dbt-core>=1.9.2",
+    "dbt-snowflake>=1.9.1",
+    "elementary-data>=0.16.2",
+    "setuptools>=75.8.0",
 ]
 
-
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.group.dev.dependencies]
-sqlfluff = "^3.3.1"
-sqlfluff-templater-dbt = "^3.3.1"
-commitizen = "^4.2.1"
-pre-commit = "^4.1.0"
+[dependency-groups]
+dev = [
+    "commitizen>=4.2.1",
+    "pre-commit>=4.1.0",
+    "sqlfluff>=3.3.1",
+    "sqlfluff-templater-dbt>=3.3.1",
+]
 
 [tool.ruff]
 exclude = [
@@ -59,7 +55,7 @@ exclude = [
 ]
 fix = false
 required-version = ">=0.6.8"
-line-length = 100
+line-length = 120
 indent-width = 4
 output-format = "concise"
 
@@ -90,9 +86,6 @@ unfixable = []
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["E402", "D104"]
-"test_dependencies.py" = ["D103", "D100"]
-"dependencies.py" = ["D100"]
-"function_app.py" = ["N803"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
@@ -115,5 +108,5 @@ line-ending = "auto"
 name = "cz_conventional_commits"
 tag_format = "$version"
 version_scheme = "semver2"
-version = "0.0.1"
+version = "0.1.0"
 update_changelog_on_bump = true

@@ -10,76 +10,73 @@ TF_PLAN = plan.cache
 
 clean:
 	@echo "\nCleaning dbt artifacts .."
-	@poetry run dbt clean --no-clean-project-files-only
+	@uv run dbt clean --no-clean-project-files-only
 	@echo "\nCleaning unused pre-commit cached repos. .."
-	@poetry run pre-commit gc
+	@uv run pre-commit gc
 
 
 install:
 	@echo "\nInstalling Dependencies .."
-	@poetry --version
-	@poetry lock
-	@poetry install --no-root
-	@poetry check --lock
+	@uv --version
+	@uv lock --check
+	@uv sync
 	@echo "\nInstalling pre-commit hooks.."
-	@poetry run pre-commit install --install-hooks
+	@uv run pre-commit install --install-hooks
 
 
 
 requirements:
 	@echo "\nGenerating Python requirements .."
-	@.venv/bin/pip freeze > requirements.txt
+	@uv export --format=requirements-txt -o requirements.txt -q
 
 
 test: requirements
 	@echo "\nRunning sqlfluff .."
-	@poetry run sqlfluff fix --config ./.sqlfluff.cfg --show-lint-violations ./$(DBT_PATH)/
-	@poetry run sqlfluff lint --config ./.sqlfluff.cfg ./$(DBT_PATH)/
+	@uv run sqlfluff fix --config ./.sqlfluff.cfg --show-lint-violations ./$(DBT_PATH)/
+	@uv run sqlfluff lint --config ./.sqlfluff.cfg ./$(DBT_PATH)/
 	@echo "\nStaging files .."
 	@git add .
 	@echo "\nRunning pre-commit hooks ..\n"
-	@-poetry run pre-commit run
+	@-uv run pre-commit run
 	@echo "\nRestoring staged files ..\n"
 	@git restore --staged . && git status
 
 
 update: install
 	@echo "\nUpdating dependencies .."
-	@poetry update
+	@uv lock --upgrade
 	@echo "\nUpdating pre-commit hooks .."
-	@poetry run pre-commit autoupdate
-	@echo "\nValidating poetry consistency with lock file ..\n"
-	@poetry check
+	@uv run pre-commit autoupdate
 
 
 # DBT Commands
 
 dbt-debug:
 	@echo "\nDebugging profile config .."
-	@poetry run dbt debug --config-dir
-	@poetry run dbt debug
+	@uv run dbt debug --config-dir
+	@uv run dbt debug
 
 
 dbt-test:
 	@echo "\nTesting dbt models .."
-	@poetry run dbt test --exclude "test_name:equality"
+	@uv run dbt test --exclude "test_name:equality"
 
 
 dbt-catalog: dbt-debug dbt-test
 	@echo "\nBuilding catalog .."
-	@poetry run dbt docs generate --exclude "test_name:equality"
+	@uv run dbt docs generate --exclude "test_name:equality"
 	@echo "\nOpening DBT documentation .."
-	@poetry run dbt docs serve --port 3000
+	@uv run dbt docs serve --port 3000
 
 
 dbt-run: dbt-debug
 	@echo "\nRunning dbt with target '$(TARGET)' ..."
-	@poetry run dbt run --target $(TARGET)
+	@uv run dbt run --target $(TARGET)
 
 
 dbt-elementary: dbt-test
 	@echo "\nGenerating elementary report .."
-	@poetry run edr report --project-dir $(DBT_PROJECT_DIR) \
+	@uv run edr report --project-dir $(DBT_PROJECT_DIR) \
 	--profiles-dir $(DBT_PROFILES_DIR) \
 	--open-browser false --env $(TARGET) \
 	--exclude-elementary-models true \
@@ -93,11 +90,11 @@ dbt-pipeline: dbt-run dbt-test test dbt-elementary
 dbt-ci:
 	@echo "Running dbt CI pipeline .."
 	@echo "Exporting samples and expects data .."
-	@poetry run dbt seed --target=ci
+	@uv run dbt seed --target=ci
 	@echo "Running models based on mocked sources .."
-	@poetry run dbt run --select "models/*" --exclude "package:elementary" --target=ci
+	@uv run dbt run --select "models/*" --exclude "package:elementary" --target=ci
 	@echo "Running ci tests .."
-	@poetry run dbt test --select "test_name:equality" --target=ci
+	@uv run dbt test --select "test_name:equality" --target=ci
 
 # terraform & airbyte
 
