@@ -24,6 +24,11 @@ install:
 	@uv run pre-commit install --install-hooks
 
 
+tag:
+	@echo "\nChecking commits .."
+	@uv run cz bump
+	@echo "\nGenerating changelog .."
+	@uz bump -ch
 
 requirements:
 	@echo "\nGenerating Python requirements .."
